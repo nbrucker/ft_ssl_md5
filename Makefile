@@ -13,7 +13,8 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 
 SRCS = 	main.c \
-		md5.c
+		md5.c \
+		sha256.c
 
 OBJS = $(addprefix $(OBJSDIR),$(SRCS:.c=.o))
 

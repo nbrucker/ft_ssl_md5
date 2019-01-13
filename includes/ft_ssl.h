@@ -5,5 +5,6 @@
 # include <stdlib.h>
 
 char	*ft_md5(char *str);
+char	*ft_sha256(char *str);
 
 #endif

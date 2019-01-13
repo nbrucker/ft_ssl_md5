@@ -17,16 +17,6 @@
 # include <stdlib.h>
 # include <unistd.h>
 
-# define BUFF_SIZE 4096
-
-typedef struct		s_gnl
-{
-	int				fd;
-	char			*str;
-	long long		ret;
-	struct s_gnl	*next;
-}					t_gnl;
-
 size_t				ft_strlen(const char *s);
 void				ft_error(char *str);
 int					ft_strcmp(const char *s1, const char *s2);

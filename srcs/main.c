@@ -49,6 +49,8 @@ int		main(int ac, char **av)
 	str = ft_get_text();
 	if (ft_strcmp(av[1], "md5") == 0)
 		hash = ft_md5(str);
+	else if (ft_strcmp(av[1], "sha256") == 0)
+		hash = ft_sha256(str);
+	printf("%s\n", hash);
 	return (0);
-	(void)hash;
 }
