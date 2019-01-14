@@ -23,92 +23,6 @@ uint32_t k[] = {0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
 			0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
 			0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391};
 
-void	ft_test_print(char *str, int len)
-{
-	int i;
-
-	i = 0;
-	while (i < len)
-	{
-		printf("%d", str[i] & 0x80 ? 1 : 0);
-		printf("%d", str[i] & 0x40 ? 1 : 0);
-		printf("%d", str[i] & 0x20 ? 1 : 0);
-		printf("%d", str[i] & 0x10 ? 1 : 0);
-		printf("%d", str[i] & 0x08 ? 1 : 0);
-		printf("%d", str[i] & 0x04 ? 1 : 0);
-		printf("%d", str[i] & 0x02 ? 1 : 0);
-		printf("%d", str[i] & 0x01 ? 1 : 0);
-		printf(" ");
-		i++;
-	}
-}
-
-char	*ft_copyn(char *dst, const char *src, size_t len)
-{
-	size_t i;
-
-	i = 0;
-	while (i < len)
-	{
-		dst[i] = src[i];
-		i++;
-	}
-	return (dst);
-}
-
-uint32_t	ft_left_rotate(uint32_t x, uint32_t c)
-{
-	return (x << c) | (x >> (32 - c));
-}
-
-char			*ft_strrev(char *str)
-{
-	int		i;
-	int		j;
-	char	tmp;
-
-	i = 0;
-	j = ft_strlen(str) - 1;
-	while (j > i)
-	{
-		tmp = str[i];
-		str[i] = str[j];
-		str[j] = tmp;
-		i++;
-		j--;
-	}
-	return (str);
-}
-
-char		*ft_itao_base(int value, int size)
-{
-	unsigned long long	nbr;
-	int					i;
-	char				*str;
-	char				*hex;
-
-	if ((hex = ft_strdup("0123456789abcdef")) == NULL)
-		ft_error("Malloc error");
-	if ((str = ft_strnew((size * 2) + 1)) == NULL)
-		ft_error("Malloc error");
-	nbr = value;
-	i = 0;
-	while (nbr != 0 && i < size * 2)
-	{
-		str[i] = hex[nbr % 16];
-		nbr = nbr / 16;
-		i++;
-	}
-	while (i < size * 2)
-	{
-		str[i] = '0';
-		i++;
-	}
-	str[i] = 0;
-	free(hex);
-	return (ft_strrev(str));
-}
-
 void		ft_fill_hash(char *str, uint32_t x)
 {
 	char	*tmp;
@@ -166,7 +80,7 @@ char	*ft_md5(char *str)
 	i = 0;
 	while (i < new_len)
 	{
-		ft_copyn((void*)chunk, new + i, 64);
+		ft_copy_len((char*)chunk, new + i, 64);
 
 		a = a0;
 		b = b0;

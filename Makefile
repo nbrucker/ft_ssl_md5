@@ -14,7 +14,9 @@ CFLAGS = -Wall -Wextra -Werror
 
 SRCS = 	main.c \
 		md5.c \
-		sha256.c
+		sha256.c \
+		rotate.c \
+		lib.c
 
 OBJS = $(addprefix $(OBJSDIR),$(SRCS:.c=.o))
 

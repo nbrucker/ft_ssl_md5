@@ -18,7 +18,7 @@ void	ft_handle_error(int ac, char **av)
 	}
 }
 
-char	*ft_get_text(void)
+char	*ft_read_stdin(void)
 {
 	char    buf[4096 + 1];
 	char	*str;
@@ -46,7 +46,7 @@ int		main(int ac, char **av)
 	char	*hash;
 
 	ft_handle_error(ac, av);
-	str = ft_get_text();
+	str = ft_read_stdin();
 	if (ft_strcmp(av[1], "md5") == 0)
 		hash = ft_md5(str);
 	else if (ft_strcmp(av[1], "sha256") == 0)

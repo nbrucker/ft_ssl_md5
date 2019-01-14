@@ -10,42 +10,13 @@ static uint32_t k[] = {0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25
 				0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
 				0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2};
 
-static char	*ft_copyn(char *dst, const char *src, size_t len)
+static void		ft_fill_hash(char *str, uint32_t x)
 {
-	size_t i;
+	char	*tmp;
 
-	i = 0;
-	while (i < len)
-	{
-		dst[i] = src[i];
-		i++;
-	}
-	return (dst);
-}
-
-uint32_t	ft_right_rotate(uint32_t x, uint32_t c)
-{
-	return (x >> c) | (x << (32 - c));
-}
-
-static void	ft_test_print(char *str, int len)
-{
-	int i;
-
-	i = 0;
-	while (i < len)
-	{
-		// printf("%d", str[i] & 0x80 ? 1 : 0);
-		// printf("%d", str[i] & 0x40 ? 1 : 0);
-		// printf("%d", str[i] & 0x20 ? 1 : 0);
-		// printf("%d", str[i] & 0x10 ? 1 : 0);
-		// printf("%d", str[i] & 0x08 ? 1 : 0);
-		// printf("%d", str[i] & 0x04 ? 1 : 0);
-		// printf("%d", str[i] & 0x02 ? 1 : 0);
-		// printf("%d", str[i] & 0x01 ? 1 : 0);
-		printf("%x ", str[i]);
-		i++;
-	}
+	tmp = ft_itao_base(x, 4);
+	ft_strcpy(str, tmp);
+	ft_strdel(&tmp);
 }
 
 char	*ft_sha256(char *str)
@@ -93,13 +64,11 @@ char	*ft_sha256(char *str)
 	new[new_len - 3] = (uint64_t)(len * 8) & 0xFF0000;
 	new[new_len - 2] = (uint64_t)(len * 8) & 0xFF00;
 	new[new_len - 1] = (uint64_t)(len * 8) & 0xFF;
-	ft_test_print(new, new_len);
-	printf("\n%d\n", len * 8);
 
 	i = 0;
 	while (i < new_len)
 	{
-		ft_copyn((void*)chunk, new + i, 64);
+		ft_copy_len((char*)chunk, new + i, 64);
 		j = 0;
 		while (j < 16)
 		{
@@ -118,13 +87,6 @@ char	*ft_sha256(char *str)
 			chunk[j] = chunk[j - 16] + s0 + chunk[j - 7] + s1;
 			j++;
 		}
-		j = 0;
-		while (j < 64)
-		{
-			printf("%-.8x ", chunk[j]);
-			j++;
-		}
-		printf("\n");
 
 		a = h0;
 		b = h1;
@@ -165,9 +127,16 @@ char	*ft_sha256(char *str)
 		h7 += h;
 		i += 64;
 	}
-	printf("%x %x %x %x %x %x %x %x\n", h0, h1, h2, h3, h4, h5, h6, h7);
-	if (!(hash = ft_strnew(33)))
+	if (!(hash = ft_strnew(65)))
 		ft_error("Malloc error");
+	ft_fill_hash(hash, h0);
+	ft_fill_hash(hash + 8, h1);
+	ft_fill_hash(hash + 16, h2);
+	ft_fill_hash(hash + 24, h3);
+	ft_fill_hash(hash + 32, h4);
+	ft_fill_hash(hash + 40, h5);
+	ft_fill_hash(hash + 48, h6);
+	ft_fill_hash(hash + 56, h7);
 	ft_strdel(&new);
 	return (hash);
 }
