@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nbrucker <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/01/15 18:19:10 by nbrucker          #+#    #+#             */
+/*   Updated: 2019/01/15 18:19:10 by nbrucker         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_ssl.h"
 #include "libft.h"
 
 void	ft_handle_error(int ac, char **av)
 {
-	if (ac < 2 || ac > 4)
+	if (ac < 2)
 		ft_error("usage: ft_ssl command [command opts] [command args]");
 	else if (ft_strcmp(av[1], "md5") != 0 && ft_strcmp(av[1], "sha256") != 0)
 	{
@@ -18,16 +30,16 @@ void	ft_handle_error(int ac, char **av)
 	}
 }
 
-char	*ft_read_stdin(void)
+char	*ft_read(int fd)
 {
-	char    buf[4096 + 1];
+	char	buf[4096 + 1];
 	char	*str;
 	char	*tmp;
 	int		ret;
 
 	if (!(str = ft_strnew(1)))
 		ft_error("Malloc error");
-	while ((ret = read(0, buf, 4096)) > 0)
+	while ((ret = read(fd, buf, 4096)) > 0)
 	{
 		buf[ret] = 0;
 		tmp = str;
@@ -40,17 +52,115 @@ char	*ft_read_stdin(void)
 	return (str);
 }
 
-int		main(int ac, char **av)
+char	*ft_call_hash(t_env *env, char *str)
+{
+	if (ft_strcmp(env->algo, "md5") == 0)
+		return (ft_md5(str));
+	else if (ft_strcmp(env->algo, "sha256") == 0)
+		return (ft_sha256(str));
+	ft_error("Unexpected error");
+	return (NULL);
+}
+
+void	ft_handle_s(int ac, char **av, t_env *env, int *i)
+{
+	char	*hash;
+
+	if (*i + 1 >= ac)
+		ft_error("ft_ssl: Error: option requires an argument -- s");
+	hash = ft_call_hash(env, av[*i + 1]);
+	ft_strdel(&hash);
+	*i += 1;
+	env->got = 1;
+}
+
+void	ft_handle_p(t_env *env)
 {
 	char	*str;
 	char	*hash;
 
-	ft_handle_error(ac, av);
-	str = ft_read_stdin();
-	if (ft_strcmp(av[1], "md5") == 0)
-		hash = ft_md5(str);
-	else if (ft_strcmp(av[1], "sha256") == 0)
-		hash = ft_sha256(str);
+	str = ft_read(0);
+	hash = ft_call_hash(env, str);
+	printf("%s%s\n", str, hash);
+	ft_strdel(&hash);
+	ft_strdel(&str);
+	env->got = 1;
+}
+
+void	ft_handle_file(char **av, t_env *env, int i)
+{
+	char	*str;
+	char	*hash;
+	int		fd;
+
+	env->file = 1;
+	if ((fd = open(av[i], O_RDONLY)) == -1)
+		ft_error("Error opening file");
+	str = ft_read(fd);
+	if (close(fd) == -1)
+		ft_error("Error closing file");
+	hash = ft_call_hash(env, str);
 	printf("%s\n", hash);
+	ft_strdel(&hash);
+	ft_strdel(&str);
+	env->got = 1;
+}
+
+void	ft_handle_no_arg(t_env *env)
+{
+	char	*str;
+	char	*hash;
+
+	str = ft_read(0);
+	hash = ft_call_hash(env, str);
+	printf("%s\n", hash);
+	ft_strdel(&hash);
+	ft_strdel(&str);
+}
+
+void	ft_handle_arguments(int ac, char **av, t_env *env)
+{
+	int		i;
+
+	i = 2;
+	env->algo = av[1];
+	while (i < ac)
+	{
+		if (ft_strcmp(av[i], "-q") == 0 && env->file == 0)
+			env->q = 1;
+		else if (ft_strcmp(av[i], "-r") == 0 && env->file == 0)
+			env->r = 1;
+		else if (ft_strcmp(av[i], "-s") == 0 && env->file == 0)
+			ft_handle_s(ac, av, env, &i);
+		else if (ft_strcmp(av[i], "-p") == 0 && env->file == 0)
+			ft_handle_p(env);
+		else
+			ft_handle_file(av, env, i);
+		i++;
+	}
+	if (env->got == 0)
+		ft_handle_no_arg(env);
+}
+
+t_env	*ft_get_env(void)
+{
+	t_env	*env;
+
+	if (!(env = (t_env*)malloc(sizeof(t_env))))
+		ft_error("Malloc error");
+	env->q = 0;
+	env->r = 0;
+	env->file = 0;
+	env->got = 0;
+	return (env);
+}
+
+int		main(int ac, char **av)
+{
+	t_env	*env;
+
+	ft_handle_error(ac, av);
+	env = ft_get_env();
+	ft_handle_arguments(ac, av, env);
 	return (0);
 }

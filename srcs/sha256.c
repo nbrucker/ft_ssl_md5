@@ -1,7 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   sha256.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nbrucker <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/01/15 18:19:30 by nbrucker          #+#    #+#             */
+/*   Updated: 2019/01/15 18:19:30 by nbrucker         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_ssl.h"
 #include "libft.h"
 
-static uint32_t k[] = {0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+static uint32_t	k[] = {0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
 				0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
 				0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
 				0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
@@ -19,17 +31,17 @@ static void		ft_fill_hash(char *str, uint32_t x)
 	ft_strdel(&tmp);
 }
 
-char	*ft_sha256(char *str)
+char			*ft_sha256(char *str)
 {
 	char		*hash;
-	uint32_t 	len;
+	uint32_t	len;
 	uint32_t	new_len;
 	char		*new;
 	uint32_t	chunk[64];
-	uint32_t 	i;
-	uint32_t 	j;
-	uint32_t 	s0;
-	uint32_t 	s1;
+	uint32_t	i;
+	uint32_t	j;
+	uint32_t	s0;
+	uint32_t	s1;
 	uint32_t	h0 = 0x6a09e667;
 	uint32_t	h1 = 0xbb67ae85;
 	uint32_t	h2 = 0x3c6ef372;
@@ -55,7 +67,7 @@ char	*ft_sha256(char *str)
 	if (!(new = ft_strnew(new_len)))
 		ft_error("Malloc error");
 	ft_strcpy(new, str);
-	new[len] = 128;
+	new[len] = (char)128;
 	new[new_len - 8] = (uint64_t)(len * 8) & 0xFF00000000000000;
 	new[new_len - 7] = (uint64_t)(len * 8) & 0xFF000000000000;
 	new[new_len - 6] = (uint64_t)(len * 8) & 0xFF0000000000;
