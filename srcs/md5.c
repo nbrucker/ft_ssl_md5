@@ -80,13 +80,13 @@ char	*ft_md5(char *str)
 		ft_error("Malloc error");
 	ft_strcpy(new, str);
 	new[len] = (char)128;
-	new[new_len - 1] = (uint64_t)(len * 8) & 0xFF00000000000000;
-	new[new_len - 2] = (uint64_t)(len * 8) & 0xFF000000000000;
-	new[new_len - 3] = (uint64_t)(len * 8) & 0xFF0000000000;
-	new[new_len - 4] = (uint64_t)(len * 8) & 0xFF00000000;
-	new[new_len - 5] = (uint64_t)(len * 8) & 0xFF000000;
-	new[new_len - 6] = (uint64_t)(len * 8) & 0xFF0000;
-	new[new_len - 7] = (uint64_t)(len * 8) & 0xFF00;
+	new[new_len - 1] = ((uint64_t)(len * 8) & 0xFF00000000000000) >> 56;
+	new[new_len - 2] = ((uint64_t)(len * 8) & 0xFF000000000000) >> 48;
+	new[new_len - 3] = ((uint64_t)(len * 8) & 0xFF0000000000) >> 40;
+	new[new_len - 4] = ((uint64_t)(len * 8) & 0xFF00000000) >> 32;
+	new[new_len - 5] = ((uint64_t)(len * 8) & 0xFF000000) >> 24;
+	new[new_len - 6] = ((uint64_t)(len * 8) & 0xFF0000) >> 16;
+	new[new_len - 7] = ((uint64_t)(len * 8) & 0xFF00) >> 8;
 	new[new_len - 8] = (uint64_t)(len * 8) & 0xFF;
 
 	i = 0;
