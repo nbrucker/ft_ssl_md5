@@ -62,17 +62,16 @@ char	*ft_call_hash(t_env *env, char *str)
 	return (NULL);
 }
 
-char	*ft_str_upper(char *str)
+void	ft_print_upper(char *str)
 {
 	int	i;
 
 	i = 0;
 	while (str[i])
 	{
-		str[i] = ft_toupper(str[i]);
+		ft_putchar(ft_toupper(str[i]));
 		i++;
 	}
-	return (str);
 }
 
 void	ft_print_str(char *hash, char *str, t_env *env)
@@ -88,7 +87,7 @@ void	ft_print_str(char *hash, char *str, t_env *env)
 	}
 	else 
 	{
-		ft_putstr(ft_str_upper(env->algo));
+		ft_print_upper(env->algo);
 		ft_putstr(" (\"");
 		ft_putstr(str);
 		ft_putstr("\") = ");
@@ -136,7 +135,7 @@ void	ft_print_file(char *hash, char *name, t_env *env)
 	}
 	else 
 	{
-		ft_putstr(ft_str_upper(env->algo));
+		ft_print_upper(env->algo);
 		ft_putstr(" (");
 		ft_putstr(name);
 		ft_putstr(") = ");
@@ -152,7 +151,12 @@ void	ft_handle_file(char **av, t_env *env, int i)
 
 	env->file = 1;
 	if ((fd = open(av[i], O_RDONLY)) == -1)
-		ft_error("Error opening file");
+	{
+		ft_putstr("ft_ssl: ");
+		ft_putstr(av[i]);
+		ft_putendl(": No such file or directory");
+		return ;
+	}
 	str = ft_read(fd);
 	if (close(fd) == -1)
 		ft_error("Error closing file");
