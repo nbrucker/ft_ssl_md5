@@ -23,6 +23,7 @@ typedef struct	s_env
 	int			r;
 	int			file;
 	int			got;
+	int			option;
 	char		*algo;
 }				t_env;
 

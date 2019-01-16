@@ -62,6 +62,40 @@ char	*ft_call_hash(t_env *env, char *str)
 	return (NULL);
 }
 
+char	*ft_str_upper(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		str[i] = ft_toupper(str[i]);
+		i++;
+	}
+	return (str);
+}
+
+void	ft_print_str(char *hash, char *str, t_env *env)
+{
+	if (env->q == 1)
+		ft_putendl(hash);
+	else if (env->r == 1)
+	{
+		ft_putstr(hash);
+		ft_putstr(" \"");
+		ft_putstr(str);
+		ft_putendl("\"");
+	}
+	else 
+	{
+		ft_putstr(ft_str_upper(env->algo));
+		ft_putstr(" (\"");
+		ft_putstr(str);
+		ft_putstr("\") = ");
+		ft_putendl(hash);
+	}
+}
+
 void	ft_handle_s(int ac, char **av, t_env *env, int *i)
 {
 	char	*hash;
@@ -69,9 +103,11 @@ void	ft_handle_s(int ac, char **av, t_env *env, int *i)
 	if (*i + 1 >= ac)
 		ft_error("ft_ssl: Error: option requires an argument -- s");
 	hash = ft_call_hash(env, av[*i + 1]);
+	ft_print_str(hash, av[*i + 1], env);
 	ft_strdel(&hash);
 	*i += 1;
 	env->got = 1;
+	env->option = 0;
 }
 
 void	ft_handle_p(t_env *env)
@@ -81,10 +117,31 @@ void	ft_handle_p(t_env *env)
 
 	str = ft_read(0);
 	hash = ft_call_hash(env, str);
-	printf("%s%s\n", str, hash);
+	ft_putstr(str);
+	ft_putendl(hash);
 	ft_strdel(&hash);
 	ft_strdel(&str);
 	env->got = 1;
+}
+
+void	ft_print_file(char *hash, char *name, t_env *env)
+{
+	if (env->q == 1)
+		ft_putendl(hash);
+	else if (env->r == 1)
+	{
+		ft_putstr(hash);
+		ft_putchar(' ');
+		ft_putendl(name);
+	}
+	else 
+	{
+		ft_putstr(ft_str_upper(env->algo));
+		ft_putstr(" (");
+		ft_putstr(name);
+		ft_putstr(") = ");
+		ft_putendl(hash);
+	}
 }
 
 void	ft_handle_file(char **av, t_env *env, int i)
@@ -100,10 +157,11 @@ void	ft_handle_file(char **av, t_env *env, int i)
 	if (close(fd) == -1)
 		ft_error("Error closing file");
 	hash = ft_call_hash(env, str);
-	printf("%s\n", hash);
+	ft_print_file(hash, av[i], env);
 	ft_strdel(&hash);
 	ft_strdel(&str);
 	env->got = 1;
+	env->option = 0;
 }
 
 void	ft_handle_no_arg(t_env *env)
@@ -113,7 +171,7 @@ void	ft_handle_no_arg(t_env *env)
 
 	str = ft_read(0);
 	hash = ft_call_hash(env, str);
-	printf("%s\n", hash);
+	ft_putendl(hash);
 	ft_strdel(&hash);
 	ft_strdel(&str);
 }
@@ -126,6 +184,9 @@ void	ft_handle_arguments(int ac, char **av, t_env *env)
 	env->algo = av[1];
 	while (i < ac)
 	{
+		if ((ft_strcmp(av[i], "-q") == 0 ||
+			ft_strcmp(av[i], "-r")) && env->file == 0)
+			env->option = 1;
 		if (ft_strcmp(av[i], "-q") == 0 && env->file == 0)
 			env->q = 1;
 		else if (ft_strcmp(av[i], "-r") == 0 && env->file == 0)
@@ -138,7 +199,7 @@ void	ft_handle_arguments(int ac, char **av, t_env *env)
 			ft_handle_file(av, env, i);
 		i++;
 	}
-	if (env->got == 0)
+	if (env->got == 0 || env->option == 1)
 		ft_handle_no_arg(env);
 }
 
@@ -152,6 +213,7 @@ t_env	*ft_get_env(void)
 	env->r = 0;
 	env->file = 0;
 	env->got = 0;
+	env->option = 0;
 	return (env);
 }
 

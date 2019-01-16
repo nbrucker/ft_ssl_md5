@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   ft_toupper.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbrucker <nbrucker@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,24 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+#include "libft.h"
 
-# include <string.h>
-# include <stdlib.h>
-# include <unistd.h>
-
-size_t				ft_strlen(const char *s);
-void				ft_error(char *str);
-int					ft_strcmp(const char *s1, const char *s2);
-void				ft_putchar(char c);
-void				ft_putstr(char const *s);
-void				ft_putendl(char const *s);
-void				ft_strdel(char **as);
-char				*ft_strjoin(char const *s1, char const *s2);
-char				*ft_strnew(size_t size);
-char				*ft_strcpy(char *dst, const char *src);
-char				*ft_strdup(const char *s1);
-int					ft_toupper(int c);
-
-#endif
+int		ft_toupper(int c)
+{
+	if (c >= 'a' && c <= 'z')
+		c -= 32;
+	return (c);
+}
