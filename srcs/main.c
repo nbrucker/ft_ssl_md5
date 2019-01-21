@@ -30,181 +30,27 @@ void	ft_handle_error(int ac, char **av)
 	}
 }
 
-char	*ft_read(int fd)
-{
-	char	buf[4096 + 1];
-	char	*str;
-	char	*tmp;
-	int		ret;
-
-	if (!(str = ft_strnew(1)))
-		ft_error("Malloc error");
-	while ((ret = read(fd, buf, 4096)) > 0)
-	{
-		buf[ret] = 0;
-		tmp = str;
-		if (!(str = ft_strjoin(str, buf)))
-			ft_error("Malloc error");
-		ft_strdel(&tmp);
-	}
-	if (ret == -1)
-		ft_error("Error reading input");
-	return (str);
-}
-
-char	*ft_call_hash(t_env *env, char *str)
+void	ft_call_hash(t_env *env, t_hash *hash)
 {
 	if (ft_strcmp(env->algo, "md5") == 0)
-		return (ft_md5(str));
+		ft_md5(hash);
 	else if (ft_strcmp(env->algo, "sha256") == 0)
-		return (ft_sha256(str));
-	ft_error("Unexpected error");
-	return (NULL);
+		ft_sha256(hash);
+	else
+		ft_error("Unexpected error");
 }
 
-void	ft_print_upper(char *str)
+t_hash	*ft_get_hash_env(char *str)
 {
-	int	i;
+	t_hash	*hash;
 
-	i = 0;
-	while (str[i])
-	{
-		ft_putchar(ft_toupper(str[i]));
-		i++;
-	}
-}
-
-void	ft_print_str(char *hash, char *str, t_env *env)
-{
-	if (env->q == 1)
-		ft_putendl(hash);
-	else if (env->r == 1)
-	{
-		ft_putstr(hash);
-		ft_putstr(" \"");
-		ft_putstr(str);
-		ft_putendl("\"");
-	}
-	else 
-	{
-		ft_print_upper(env->algo);
-		ft_putstr(" (\"");
-		ft_putstr(str);
-		ft_putstr("\") = ");
-		ft_putendl(hash);
-	}
-}
-
-void	ft_handle_s(int ac, char **av, t_env *env, int *i)
-{
-	char	*hash;
-
-	if (*i + 1 >= ac)
-		ft_error("ft_ssl: Error: option requires an argument -- s");
-	hash = ft_call_hash(env, av[*i + 1]);
-	ft_print_str(hash, av[*i + 1], env);
-	ft_strdel(&hash);
-	*i += 1;
-	env->got = 1;
-	env->option = 0;
-}
-
-void	ft_handle_p(t_env *env)
-{
-	char	*str;
-	char	*hash;
-
-	str = ft_read(0);
-	hash = ft_call_hash(env, str);
-	ft_putstr(str);
-	ft_putendl(hash);
-	ft_strdel(&hash);
-	ft_strdel(&str);
-	env->got = 1;
-}
-
-void	ft_print_file(char *hash, char *name, t_env *env)
-{
-	if (env->q == 1)
-		ft_putendl(hash);
-	else if (env->r == 1)
-	{
-		ft_putstr(hash);
-		ft_putchar(' ');
-		ft_putendl(name);
-	}
-	else 
-	{
-		ft_print_upper(env->algo);
-		ft_putstr(" (");
-		ft_putstr(name);
-		ft_putstr(") = ");
-		ft_putendl(hash);
-	}
-}
-
-void	ft_handle_file(char **av, t_env *env, int i)
-{
-	char	*str;
-	char	*hash;
-	int		fd;
-
-	env->file = 1;
-	if ((fd = open(av[i], O_RDONLY)) == -1)
-	{
-		ft_putstr("ft_ssl: ");
-		ft_putstr(av[i]);
-		ft_putendl(": No such file or directory");
-		return ;
-	}
-	str = ft_read(fd);
-	if (close(fd) == -1)
-		ft_error("Error closing file");
-	hash = ft_call_hash(env, str);
-	ft_print_file(hash, av[i], env);
-	ft_strdel(&hash);
-	ft_strdel(&str);
-	env->got = 1;
-	env->option = 0;
-}
-
-void	ft_handle_no_arg(t_env *env)
-{
-	char	*str;
-	char	*hash;
-
-	str = ft_read(0);
-	hash = ft_call_hash(env, str);
-	ft_putendl(hash);
-	ft_strdel(&hash);
-	ft_strdel(&str);
-}
-
-void	ft_handle_arguments(int ac, char **av, t_env *env)
-{
-	int		i;
-
-	i = 2;
-	env->algo = av[1];
-	while (i < ac)
-	{
-		if ((ft_strcmp(av[i], "-q") == 0 ||
-			ft_strcmp(av[i], "-r")) && env->file == 0)
-			env->option = 1;
-		if (ft_strcmp(av[i], "-q") == 0 && env->file == 0)
-			env->q = 1;
-		else if (ft_strcmp(av[i], "-r") == 0 && env->file == 0)
-			env->r = 1;
-		else if (ft_strcmp(av[i], "-s") == 0 && env->file == 0)
-			ft_handle_s(ac, av, env, &i);
-		else if (ft_strcmp(av[i], "-p") == 0 && env->file == 0)
-			ft_handle_p(env);
-		else
-			ft_handle_file(av, env, i);
-		i++;
-	}
-	if (env->got == 0 || env->option == 1)
-		ft_handle_no_arg(env);
+	if (!(hash = (t_hash*)malloc(sizeof(t_hash))))
+		ft_error("Malloc error");
+	hash->str = str;
+	hash->hash = NULL;
+	hash->len = strlen(hash->str);
+	hash->hash_len = 0;
+	return (hash);
 }
 
 t_env	*ft_get_env(void)
@@ -217,7 +63,6 @@ t_env	*ft_get_env(void)
 	env->r = 0;
 	env->file = 0;
 	env->got = 0;
-	env->option = 0;
 	return (env);
 }
 
@@ -227,6 +72,6 @@ int		main(int ac, char **av)
 
 	ft_handle_error(ac, av);
 	env = ft_get_env();
-	ft_handle_arguments(ac, av, env);
+	ft_handle_arguments_md5(ac, av, env);
 	return (0);
 }

@@ -23,7 +23,7 @@ int					ft_strcmp(const char *s1, const char *s2);
 void				ft_putchar(char c);
 void				ft_putstr(char const *s);
 void				ft_putendl(char const *s);
-void				ft_strdel(char **as);
+void				ft_memdel(void **ap);
 char				*ft_strjoin(char const *s1, char const *s2);
 char				*ft_strnew(size_t size);
 char				*ft_strcpy(char *dst, const char *src);

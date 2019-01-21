@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdel.c                                        :+:      :+:    :+:   */
+/*   ft_memdel.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbrucker <nbrucker@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,10 +12,10 @@
 
 #include "libft.h"
 
-void	ft_strdel(char **as)
+void	ft_memdel(void **ap)
 {
-	if (as == NULL)
+	if (ap == NULL)
 		return ;
-	free(*as);
-	*as = NULL;
+	free(*ap);
+	*ap = NULL;
 }

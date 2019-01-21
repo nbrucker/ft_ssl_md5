@@ -13,17 +13,57 @@
 #include "ft_ssl.h"
 #include "libft.h"
 
-char	*ft_copy_len(char *dst, const char *src, size_t len)
+void	ft_print_upper(char *str)
 {
-	size_t i;
+	int	i;
 
+	i = 0;
+	while (str[i])
+	{
+		ft_putchar(ft_toupper(str[i]));
+		i++;
+	}
+}
+
+t_read		*ft_read(int fd)
+{
+	char	buf[4096 + 1];
+	t_read	*elem;
+	char	*tmp;
+	int		ret;
+
+	if (!(elem = (t_read*)malloc(sizeof(t_read))))
+		ft_error("Malloc error");
+	if (!(elem->str = ft_strnew(1)))
+		ft_error("Malloc error");
+	while ((ret = read(fd, buf, 4096)) > 0)
+	{
+		elem->len += ret;
+		buf[ret] = 0;
+		tmp = elem->str;
+		if (!(elem->str = ft_strjoin(elem->str, buf)))
+			ft_error("Malloc error");
+		ft_memdel((void**)&tmp);
+	}
+	if (ret == -1)
+		ft_error("Error reading input");
+	return (elem);
+}
+
+void	ft_copy_len(void *dst, void *src, size_t len)
+{
+	size_t 	i;
+	char	*a;
+	char	*b;
+
+	a = (char*)dst;
+	b = (char*)src;
 	i = 0;
 	while (i < len)
 	{
-		dst[i] = src[i];
+		a[i] = b[i];
 		i++;
 	}
-	return (dst);
 }
 
 char	*ft_strrev(char *str)
