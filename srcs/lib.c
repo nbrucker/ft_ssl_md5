@@ -25,7 +25,7 @@ void	ft_print_upper(char *str)
 	}
 }
 
-t_read		*ft_read(int fd)
+t_read	*ft_read(int fd)
 {
 	char	buf[4096 + 1];
 	t_read	*elem;
@@ -52,7 +52,7 @@ t_read		*ft_read(int fd)
 
 void	ft_copy_len(void *dst, void *src, size_t len)
 {
-	size_t 	i;
+	size_t	i;
 	char	*a;
 	char	*b;
 

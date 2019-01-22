@@ -44,4 +44,3 @@ typedef struct	s_sha256
 }				t_sha256;
 
 #endif
-

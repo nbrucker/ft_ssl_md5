@@ -17,8 +17,9 @@ SRCS = 	main.c \
 		sha256.c \
 		rotate.c \
 		lib.c \
-		ft_md5_option.c \
-		ft_md5_print.c
+		md5_option.c \
+		md5_print.c \
+		md5_tools.c
 
 OBJS = $(addprefix $(OBJSDIR),$(SRCS:.c=.o))
 

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_md5.h"
+#include "md5.h"
 #include "ft_ssl.h"
 #include "libft.h"
 
@@ -36,36 +36,7 @@ uint32_t	g_k[] = {0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
 	0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391};
 
-static void		ft_fill_hash(char *str, uint32_t x)
-{
-	char	*tmp;
-	int		i;
-
-	tmp = ft_itao_base(x, 4);
-	i = 0;
-	while (i < 8)
-	{
-		str[i + 1] = tmp[7 - i];
-		str[i] = tmp[6 - i];
-		i += 2;
-	}
-	ft_memdel((void**)&tmp);
-}
-
-t_md5			*ft_init_md5(void)
-{
-	t_md5	*md5;
-
-	if (!(md5 = (t_md5*)malloc(sizeof(t_md5))))
-		ft_error("Malloc error");
-	md5->a0 = 0x67452301;
-	md5->b0 = 0xefcdab89;
-	md5->c0 = 0x98badcfe;
-	md5->d0 = 0x10325476;
-	return (md5);
-}
-
-void			ft_inner_md5_algo(t_md5 *md5, uint32_t j)
+void	ft_inner_md5_algo(t_md5 *md5, uint32_t j)
 {
 	if (j < 16)
 	{
@@ -94,7 +65,7 @@ void			ft_inner_md5_algo(t_md5 *md5, uint32_t j)
 	md5->b = md5->b + ft_left_rotate(md5->f, g_s[j]);
 }
 
-void			ft_md5_algo(t_hash *hash, t_md5 *md5, char *new)
+void	ft_md5_algo(t_hash *hash, t_md5 *md5, char *new)
 {
 	uint32_t	i;
 	uint32_t	j;
@@ -147,7 +118,7 @@ char	*ft_init_md5_hash(t_hash *hash)
 	return (new);
 }
 
-void			ft_md5(t_hash *hash)
+void	ft_md5(t_hash *hash)
 {
 	char	*new;
 	t_md5	*md5;
@@ -157,10 +128,10 @@ void			ft_md5(t_hash *hash)
 	ft_md5_algo(hash, md5, new);
 	if (!(hash->hash = ft_strnew(33)))
 		ft_error("Malloc error");
-	ft_fill_hash(hash->hash, md5->a0);
-	ft_fill_hash(hash->hash + 8, md5->b0);
-	ft_fill_hash(hash->hash + 16, md5->c0);
-	ft_fill_hash(hash->hash + 24, md5->d0);
+	ft_fill_hash_md5(hash->hash, md5->a0);
+	ft_fill_hash_md5(hash->hash + 8, md5->b0);
+	ft_fill_hash_md5(hash->hash + 16, md5->c0);
+	ft_fill_hash_md5(hash->hash + 24, md5->d0);
 	ft_memdel((void**)&new);
 	ft_memdel((void**)&md5);
 }
