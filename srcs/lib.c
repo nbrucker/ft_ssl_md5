@@ -34,15 +34,15 @@ t_read	*ft_read(int fd)
 
 	if (!(elem = (t_read*)malloc(sizeof(t_read))))
 		ft_error("Malloc error");
+	elem->len = 0;
 	if (!(elem->str = ft_strnew(1)))
 		ft_error("Malloc error");
 	while ((ret = read(fd, buf, 4096)) > 0)
 	{
-		elem->len += ret;
-		buf[ret] = 0;
 		tmp = elem->str;
-		if (!(elem->str = ft_strjoin(elem->str, buf)))
+		if (!(elem->str = ft_strnjoin(elem->str, buf, elem->len, ret)))
 			ft_error("Malloc error");
+		elem->len += ret;
 		ft_memdel((void**)&tmp);
 	}
 	if (ret == -1)
