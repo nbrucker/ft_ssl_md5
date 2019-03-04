@@ -42,6 +42,13 @@ typedef struct	s_env
 	char		*algo;
 }				t_env;
 
+typedef struct	s_f
+{
+	char		*str;
+	void		(*f)();
+	struct s_f	*next;
+}				t_f;
+
 void			ft_md5(t_hash *hash);
 void			ft_sha256(t_hash *hash);
 uint32_t		ft_right_rotate(uint32_t x, uint32_t c);
@@ -60,5 +67,7 @@ void			ft_fill_hash_md5(char *str, uint32_t x);
 t_md5			*ft_init_md5(void);
 void			ft_fill_hash_sha256(char *str, uint32_t x);
 t_sha256		*ft_init_sha256(void);
+t_f				*get_ptr(void);
+void			free_ptr(t_f *ptr);
 
 #endif

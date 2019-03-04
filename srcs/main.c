@@ -15,9 +15,20 @@
 
 void	ft_handle_error(int ac, char **av)
 {
+	t_f	*ptr;
+	t_f	*move;
+
+	ptr = get_ptr();
+	move = ptr;
 	if (ac < 2)
 		ft_error("usage: ft_ssl command [command opts] [command args]");
-	else if (ft_strcmp(av[1], "md5") != 0 && ft_strcmp(av[1], "sha256") != 0)
+	while (move)
+	{
+		if (!ft_strcmp(av[1], move->str))
+			break ;
+		move = move->next;
+	}
+	if (!move)
 	{
 		ft_putstr("ft_ssl: Error: '");
 		ft_putstr(av[1]);
@@ -28,16 +39,28 @@ void	ft_handle_error(int ac, char **av)
 		ft_putendl("sha256");
 		ft_error("\nCipher commands:");
 	}
+	free_ptr(ptr);
 }
 
 void	ft_call_hash(t_env *env, t_hash *hash)
 {
-	if (ft_strcmp(env->algo, "md5") == 0)
-		ft_md5(hash);
-	else if (ft_strcmp(env->algo, "sha256") == 0)
-		ft_sha256(hash);
-	else
+	t_f	*ptr;
+	t_f	*move;
+
+	ptr = get_ptr();
+	move = ptr;
+	while (move)
+	{
+		if (!ft_strcmp(env->algo, move->str))
+		{
+			move->f(hash);
+			break ;
+		}
+		move = move->next;
+	}
+	if (!move)
 		ft_error("Unexpected error");
+	free_ptr(ptr);
 }
 
 t_hash	*ft_get_hash_env(char *str)

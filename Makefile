@@ -19,7 +19,8 @@ SRCS = 	main.c \
 		lib.c \
 		md5_option.c \
 		md5_print.c \
-		md5_tools.c
+		md5_tools.c \
+		ptr.c
 
 OBJS = $(addprefix $(OBJSDIR),$(SRCS:.c=.o))
 
