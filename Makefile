@@ -12,6 +12,10 @@ CC = gcc
 
 CFLAGS = -Wall -Wextra -Werror
 
+HEADERS =   ft_ssl.h \
+			md5.h \
+			sha256.h
+
 SRCS = 	main.c \
 		md5.c \
 		sha256.c \
@@ -24,7 +28,7 @@ SRCS = 	main.c \
 
 OBJS = $(addprefix $(OBJSDIR),$(SRCS:.c=.o))
 
-$(OBJSDIR)%.o: $(SRCSDIR)%.c
+$(OBJSDIR)%.o: $(SRCSDIR)%.c $(addprefix $(INCSDIR),$(HEADERS))
 	mkdir -p $(OBJSDIR)
 	$(CC) $(CFLAGS) -I $(INCSDIR) -I $(LIBFTDIR)$(INCSDIR) -o $@ -c $<
 
