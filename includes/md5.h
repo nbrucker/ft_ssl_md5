@@ -14,6 +14,7 @@
 # define FT_MD5_H
 
 # include <stdlib.h>
+# include <stdint.h>
 
 typedef struct	s_md5
 {

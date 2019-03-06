@@ -14,6 +14,7 @@
 # define FT_SHA256_H
 
 # include <stdlib.h>
+# include <stdint.h>
 
 typedef struct	s_sha256
 {
