@@ -96,5 +96,6 @@ int		main(int ac, char **av)
 	ft_handle_error(ac, av);
 	env = ft_get_env();
 	ft_handle_arguments_md5(ac, av, env);
+	free(env);
 	return (0);
 }
